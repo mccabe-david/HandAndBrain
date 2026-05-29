@@ -34,4 +34,4 @@ A short shared secret that both the Hand and Brain pages must include on their w
 - **Hint** — the piece type the Brain nominates for the current turn. The Hand is constrained to move some piece of this type.
 - **Pre-commit** — a hint chosen by the Brain during the opponent's turn, before our turn has started. The Brain sees only confirmed positions, so a pre-commit may turn out to be impossible once the opponent moves.
 - **Revision window** — a short period during which the Brain may still revise their hint for the current turn. The Hand sees every revision immediately (no delay), so Hand can act on the latest hint at any moment. Once the window closes, the Brain's pick is final for the rest of the turn — the Hand may continue to deliberate, but the hint will not change. The window cannot be extended.
-- **Impossible hint** — a hint for a piece type with zero legal moves in the current position. The Hand rejects it; the Brain must pick again.
+- **Impossible hint** — a hint for a piece type with zero legal moves in the current position. The Brain must pick again.
