@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/config.ts","./src/main.tsx","./src/vite-env.d.ts","./src/components/board.tsx","./src/components/pieceicon.tsx","./src/components/resultbanner.tsx","./src/components/setupscreen.tsx","./src/lib/coord.ts","./src/lib/lichess.ts","./src/lib/protocol.ts","./src/pages/brain.tsx","./src/pages/hand.tsx"],"version":"5.7.3"}
