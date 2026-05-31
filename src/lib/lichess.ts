@@ -138,21 +138,31 @@ export async function createSeek(
   opts: { minutes: number; increment: number; rated?: boolean },
   signal: AbortSignal,
 ): Promise<void> {
-  const body = new URLSearchParams({
-    time: String(opts.minutes),
-    increment: String(opts.increment),
-    rated: String(opts.rated ?? false),
-    variant: 'standard',
-    color: 'random',
-  })
+  // Build the body as an explicit string so the wire format is unambiguous.
+  // Lichess wants `time` as a number (multiple of 0.25); sending "3.0" rather
+  // than "3" avoids any int-vs-float parsing surprises. Omit `rated` when
+  // false — the default — to dodge form-decoders that treat "false" as truthy.
+  const params: string[] = [
+    `time=${opts.minutes.toFixed(2)}`,
+    `increment=${Math.trunc(opts.increment)}`,
+    `variant=standard`,
+    `color=random`,
+  ]
+  if (opts.rated) params.push('rated=true')
+
   const res = await fetch(`${LICHESS_API}/api/board/seek`, {
     method: 'POST',
-    headers: { ...authHeaders(token), 'Content-Type': 'application/x-www-form-urlencoded' },
-    body,
+    headers: {
+      ...authHeaders(token),
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Accept: 'application/x-ndjson',
+    },
+    body: params.join('&'),
     signal,
   })
   if (!res.ok && res.status !== 0) {
-    throw new HttpError(res.status, `Seek failed (${res.status})`)
+    const text = await res.text().catch(() => '')
+    throw new HttpError(res.status, `Seek failed (${res.status}): ${text}`)
   }
   // Drain the response so the connection lifetime matches the seek.
   if (res.body) {
